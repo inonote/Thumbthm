@@ -251,9 +251,9 @@ void CMainLoop::LoadSE() {
 	ChangeVolumeSoundMem(200, m_SE.Tap);
 	ChangeVolumeSoundMem(200, m_SE.Perfect);
 	ChangeVolumeSoundMem(200, m_SE.Good);
-	ChangeVolumeSoundMem(80, m_SE.Long);
-	ChangeVolumeSoundMem(125, m_SE.Flick);
-	ChangeVolumeSoundMem(125, m_SE.Skill);
+	ChangeVolumeSoundMem(200, m_SE.Long);
+	ChangeVolumeSoundMem(200, m_SE.Flick);
+	ChangeVolumeSoundMem(200, m_SE.Skill);
 }
 
 //âπäyì«Ç›çûÇ›

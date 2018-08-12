@@ -135,8 +135,7 @@ CMusicMan::CMusicMan(const char* FolderPath, int Level, const SkinData* pSkin, c
 	m_ptOriginW.y = 670;
 	
 	//ノーツの速度を表示する小節数に変換(β)
-	m_uVisibleTick = ((12.0 - GetPrivateProfileInt("Music", "Speed", 5, "data\\Thumbthm.ini")) / 6.0) * (double)(APP_TICK_MEASURE * 4) / ((double)m_MusicInfo.Music.nBPM / 120.0);
-
+	m_uVisibleTick = (double)(400.0 * ((double)(12-GetPrivateProfileInt("Music", "Speed", 5, "data\\Thumbthm.ini"))/8)) / (60.0 / m_MusicInfo.Music.nBPM * 1000) * 4 * APP_TICK_MEASURE;
 	m_nTick = 0;
 	m_NoteAt = 0;
 	m_nCount_Miss = 0;
