@@ -337,8 +337,7 @@ void CMusicMan::MainLoop(int hGraph) {
 void CMusicMan::Draw(int hGraph){
 	ClearDrawScreen();
 	SetCameraPositionAndTarget_UpVecY(VGet(APP_WNDSX / 2, -55, -500), VGet(APP_WNDSX / 2, 800, 0));
-	//SetUseZBuffer3D(TRUE);
-	//SetWriteZBuffer3D(TRUE);
+	SetCameraNearFar(0, m_uHeight);
 
 	//”wŒi•`‰æ
 	if (m_MusicInfo.Music.bMV) {
@@ -501,14 +500,6 @@ void CMusicMan::Draw(int hGraph){
 			}
 			else if ((m_Notes[at].nType == NOTETYPE_FLICK) || (m_Notes[at].nType == NOTETYPE_LONG_END_FLICK)) {
 				hnd = m_pSkin->note.Flick;
-
-				//ƒtƒŠƒbƒN‚ÌƒKƒCƒh“I‚Èƒ„ƒc‚ð•`‰æ
-				static int oz = 0;
-				oz = (GetNowCount() % 400) / 10; //ŽžŠÔŽ²‚Ì•Ï‰»‚É‡‚í‚¹‚ÄZŽ²‚ð“®‚©‚·
-				GetGraphSizeF(m_pSkin->note.Flickg, &sx, &sy);
-				DrawBillboard3D(VGet(m_notepos[m_Notes[at].nLane] - (m_pSkin->note.Tap_size.x - sx) / 2,
-					y + sy,
-					69.0f - sy - 30 - oz), 0, 0.5, sx, 0, m_pSkin->note.Flickg, TRUE);
 			}
 			else
 				hnd = m_pSkin->note.Tap;
@@ -540,7 +531,7 @@ void CMusicMan::Draw(int hGraph){
 				oz = (GetNowCount() % 400) / 10; //ŽžŠÔŽ²‚Ì•Ï‰»‚É‡‚í‚¹‚ÄZŽ²‚ð“®‚©‚·
 				GetGraphSizeF(m_pSkin->note.Flickg, &sx, &sy);
 				DrawBillboard3D(VGet(m_notepos[m_Notes[at].nLane] - (m_pSkin->note.Tap_size.x - sx) / 2,
-					y + sy,
+					y + m_pSkin->note.Tap_size.y,
 					69.0f - sy - 20 - oz), 0, 0.5, sx, 0, m_pSkin->note.Flickg, TRUE);
 			}
 		}
