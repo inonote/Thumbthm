@@ -125,7 +125,7 @@ void CMainLoop::Draw() {
 			cchm->MainLoop(hBackBuffer);
 
 			if (CheckHitKey(KEY_INPUT_F1)) {
-				DxMesageBox("Thumbthm v0.2.0.0\ntwitter:@inonote\n\nこのソフトウェアは以下のライブラリを使用しています。詳細は本ソフトの説明書をご覧ください。\nDXライブラリ / libjpeg / libtiff / libpng / zlib / Bullet / ogg_static / vorbis_static / vorbisfile_static / libtheora_static / Opus audio codec / Opusfile / Mersenne Twister", "About", 0, hBackBuffer, m_cFps, true);
+				DxMesageBox("Thumbthm v0.3.0\ntwitter:@inonote\n\nこのソフトウェアは以下のライブラリを使用しています。詳細は本ソフトの説明書をご覧ください。\nDXライブラリ / libjpeg / libtiff / libpng / zlib / Bullet / ogg_static / vorbis_static / vorbisfile_static / libtheora_static / Opus audio codec / Opusfile / Mersenne Twister", "About", 0, hBackBuffer, m_cFps, true);
 			}
 			if (CheckHitKey(KEY_INPUT_F10)) {
 				m_bBreak = true;

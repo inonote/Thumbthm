@@ -337,8 +337,8 @@ void CMusicMan::MainLoop(int hGraph) {
 void CMusicMan::Draw(int hGraph){
 	ClearDrawScreen();
 	SetCameraPositionAndTarget_UpVecY(VGet(APP_WNDSX / 2, -55, -500), VGet(APP_WNDSX / 2, 800, 0));
-	SetUseZBuffer3D(TRUE);
-	SetWriteZBuffer3D(TRUE);
+	//SetUseZBuffer3D(TRUE);
+	//SetWriteZBuffer3D(TRUE);
 
 	//背景描画
 	if (m_MusicInfo.Music.bMV) {
@@ -370,13 +370,21 @@ void CMusicMan::Draw(int hGraph){
 		}
 	}
 	else {
-		bKeyDown[0] = CheckHitKey(KEY_INPUT_X);
-		bKeyDown[1] = CheckHitKey(KEY_INPUT_C);
-		bKeyDown[2] = CheckHitKey(KEY_INPUT_V);
-		bKeyDown[3] = CheckHitKey(KEY_INPUT_B);
-		bKeyDown[4] = CheckHitKey(KEY_INPUT_N);
-		bKeyDown[5] = CheckHitKey(KEY_INPUT_M);
-		bKeyDown[6] = CheckHitKey(KEY_INPUT_COMMA);
+		bKeyDown[0] |= CheckHitKey(KEY_INPUT_X);
+		bKeyDown[1] |= CheckHitKey(KEY_INPUT_C);
+		bKeyDown[2] |= CheckHitKey(KEY_INPUT_V);
+		bKeyDown[3] |= CheckHitKey(KEY_INPUT_B);
+		bKeyDown[4] |= CheckHitKey(KEY_INPUT_N);
+		bKeyDown[5] |= CheckHitKey(KEY_INPUT_M);
+		bKeyDown[6] |= CheckHitKey(KEY_INPUT_COMMA);
+
+		bKeyDown[0] |= m_Cki.KeyHeld(KEY_INPUT_E);
+		bKeyDown[1] |= m_Cki.KeyHeld(KEY_INPUT_R);
+		bKeyDown[2] |= m_Cki.KeyHeld(KEY_INPUT_T);
+		bKeyDown[3] |= m_Cki.KeyHeld(KEY_INPUT_Y);
+		bKeyDown[4] |= m_Cki.KeyHeld(KEY_INPUT_U);
+		bKeyDown[5] |= m_Cki.KeyHeld(KEY_INPUT_I);
+		bKeyDown[6] |= m_Cki.KeyHeld(KEY_INPUT_O);
 	}
 	for (i = 0; i < 7; i++) {
 		if (bKeyDown[i]) {
@@ -390,11 +398,12 @@ void CMusicMan::Draw(int hGraph){
 		}
 	}
 
-	m_nCount_VisibleNotes = 0;
+	//最高面のパーツを描画&高速化
+	m_nCount_VisibleNotes = 0; //処理したノーツの数を計測するカウンタ
 	while ((at < m_Notes.size()) && (m_Notes[at].nTick < (m_nTick + m_uVisibleTick))) {
 		if (!m_Notes[at].bHide) {
 			//Y座標計算
-			y = m_uHeight - (m_ptOrigin.y - (float)(((m_Notes[at].nTick - m_nTick) * ((float)(m_uHeight - m_pSkin->note.Tap_size.y / 2) / (float)m_uVisibleTick))));
+			y = m_uHeight - (m_ptOrigin.y - (float)(((m_Notes[at].nTick - m_nTick) * ((float)(m_uHeight) / (float)m_uVisibleTick))));
 			//同じTickでタップの場合は、ダブルノーツとして扱う
 			if ((nDoubleNotes_Lane > 0) && (nDoubleNotes_Tick == m_Notes[at].nTick) && (m_Notes[at].nType != NOTETYPE_LONG_POINT)) {
 				DrawGraph3DEx(m_notepos[nDoubleNotes_Lane - 1], y + (m_pSkin->note.Tap_size.y - m_pSkin->note.Bar_size.y) / 2, 69.2f,
@@ -402,49 +411,18 @@ void CMusicMan::Draw(int hGraph){
 					m_pSkin->note.Bar, TRUE);
 			}
 
-			//種類によって画像を変える
-			if ((m_Notes[at].nType == NOTETYPE_SKILL) || (m_Notes[at].nType == NOTETYPE_LONG_BEGIN_SKILL) || (m_Notes[at].nType == NOTETYPE_LONG_END_SKILL)) {
-				hnd = m_pSkin->note.Skill;
-			}
-			else if (m_Notes[at].nType == NOTETYPE_LONG_POINT) {
-				hnd = m_pSkin->note.Long_Point;
-			}
-			else if ((m_Notes[at].nType == NOTETYPE_LONG_BEGIN) || (m_Notes[at].nType == NOTETYPE_LONG_END)) {
-				hnd = m_pSkin->note.Long;
-			}
-			else if ((m_Notes[at].nType == NOTETYPE_FLICK) || (m_Notes[at].nType == NOTETYPE_LONG_END_FLICK)) {
-				hnd = m_pSkin->note.Flick;
-
-				//フリックのガイド的なヤツを描画
-				static int oz = 0;
-				oz = (GetNowCount() % 400) / 10; //時間軸の変化に合わせてZ軸を動かす
-				GetGraphSizeF(m_pSkin->note.Flickg, &sx, &sy);
-				DrawGraph3DEx(m_notepos[m_Notes[at].nLane] - (m_pSkin->note.Tap_size.x - sx) / 2,
-					y + sy,
-					69.0f - sy - 30 - oz, 69.0f - 30 - oz,
-					m_pSkin->note.Flickg, TRUE);
-			}
-			else
-				hnd = m_pSkin->note.Tap;
-
 			if ((m_Notes[at].nType == NOTETYPE_LONG_BEGIN) || (m_Notes[at].nType == NOTETYPE_LONG_BEGIN_SKILL) || (m_Notes[at].nType == NOTETYPE_LONG_POINT)) {
 
 				//ロングの補間ラインを描画
 				x = m_notepos[m_Notes[at].nLane] - (m_pSkin->note.Tap_size.x - m_pSkin->note.Longg_size.x) / 2;
 				x2 = m_notepos[m_Notes[m_Notes[at].nLongEndIndex].nLane] - (m_pSkin->note.Tap_size.x - m_pSkin->note.Longg_size.x) / 2;
-				y2 = m_uHeight - (m_ptOrigin.y - (float)(((m_Notes[m_Notes[at].nLongEndIndex].nTick - m_nTick) * ((float)(m_uHeight - m_pSkin->note.Tap_size.y / 2) / (float)m_uVisibleTick))));
+				y2 = m_uHeight - (m_ptOrigin.y - (float)(((m_Notes[m_Notes[at].nLongEndIndex].nTick - m_nTick) * ((float)(m_uHeight + m_pSkin->note.Tap_size.y / 2) / (float)m_uVisibleTick))));
 				BOXF box[4] = { BoxGet(x2, y2 + (m_pSkin->note.Tap_size.y - m_pSkin->note.Bar_size.y) / 2, 69.1f),
 					BoxGet(x2 + m_pSkin->note.Longg_size.x, y2 + (m_pSkin->note.Tap_size.y - m_pSkin->note.Bar_size.y) / 2, 69.1f),
 					BoxGet(x + m_pSkin->note.Longg_size.x, y + m_pSkin->note.Tap_size.y / 2, 69.1f),
 					BoxGet(x, y + m_pSkin->note.Tap_size.y / 2, 69.1f) };
 				DrawGraph3DEx(box, m_pSkin->note.Longg, TRUE);
 			}
-
-			//ノーツを描画
-			DrawGraph3DEx(m_notepos[m_Notes[at].nLane] - m_pSkin->note.Tap_size.x / 2,
-				y,
-				69.0f,
-				hnd, TRUE);
 
 			if (m_Notes[at].nType != NOTETYPE_LONG_POINT) {
 				nDoubleNotes_Lane = m_Notes[at].nLane + 1;
@@ -488,11 +466,12 @@ void CMusicMan::Draw(int hGraph){
 			BoxGet(x - (m_pSkin->note.Tap_size.x - m_pSkin->note.Longg_size.x) / 2, y + m_pSkin->note.Tap_size.y / 2, 69.1f) };
 		DrawGraph3DEx(box, m_pSkin->note.Longg, TRUE);
 
-		DrawGraph3DEx(x - m_pSkin->note.Tap_size.x / 2,
-			y,
-			69.1f,
+		DrawBillboard3D(VGet(x - m_pSkin->note.Tap_size.x / 2,
+			y + m_pSkin->note.Tap_size.y / 2,
+			69.0f), 0, 0.5, m_pSkin->note.Tap_size.x, 0,
 			m_pSkin->note.Long, TRUE);
-		if (tm_lgn2 - tm_lgn > 100){
+
+		if (tm_lgn2 - tm_lgn > 100) {
 			AnimationData adata;
 			adata.nCount = 0;
 			adata.x = x;
@@ -502,6 +481,73 @@ void CMusicMan::Draw(int hGraph){
 			m_TapAnimation.push_back(adata);
 		}
 	}
+
+	//ノーツの描画
+	at = m_NoteAt;
+	while ((at < m_Notes.size()) && (m_Notes[at].nTick < (m_nTick + m_uVisibleTick))) {
+		if (!m_Notes[at].bHide) {
+			//Y座標計算
+			y = m_uHeight - (m_ptOrigin.y - (float)(((m_Notes[at].nTick - m_nTick) * ((float)(m_uHeight - m_pSkin->note.Tap_size.y / 2) / (float)m_uVisibleTick))));
+			
+			//種類によって画像を変える
+			if ((m_Notes[at].nType == NOTETYPE_SKILL) || (m_Notes[at].nType == NOTETYPE_LONG_BEGIN_SKILL) || (m_Notes[at].nType == NOTETYPE_LONG_END_SKILL)) {
+				hnd = m_pSkin->note.Skill;
+			}
+			else if (m_Notes[at].nType == NOTETYPE_LONG_POINT) {
+				hnd = m_pSkin->note.Long_Point;
+			}
+			else if ((m_Notes[at].nType == NOTETYPE_LONG_BEGIN) || (m_Notes[at].nType == NOTETYPE_LONG_END)) {
+				hnd = m_pSkin->note.Long;
+			}
+			else if ((m_Notes[at].nType == NOTETYPE_FLICK) || (m_Notes[at].nType == NOTETYPE_LONG_END_FLICK)) {
+				hnd = m_pSkin->note.Flick;
+
+				//フリックのガイド的なヤツを描画
+				static int oz = 0;
+				oz = (GetNowCount() % 400) / 10; //時間軸の変化に合わせてZ軸を動かす
+				GetGraphSizeF(m_pSkin->note.Flickg, &sx, &sy);
+				DrawBillboard3D(VGet(m_notepos[m_Notes[at].nLane] - (m_pSkin->note.Tap_size.x - sx) / 2,
+					y + sy,
+					69.0f - sy - 30 - oz), 0, 0.5, sx, 0, m_pSkin->note.Flickg, TRUE);
+			}
+			else
+				hnd = m_pSkin->note.Tap;
+
+			//ノーツを描画
+			DrawBillboard3D(VGet(m_notepos[m_Notes[at].nLane] - m_pSkin->note.Tap_size.x / 2,
+				y + m_pSkin->note.Tap_size.y / 2,
+				69.0f), 0, 0.5, m_pSkin->note.Tap_size.x, 0,
+				hnd, TRUE);
+
+			if (m_Notes[at].nType != NOTETYPE_LONG_POINT) {
+				nDoubleNotes_Lane = m_Notes[at].nLane + 1;
+				nDoubleNotes_Tick = m_Notes[at].nTick;
+			}
+		}
+		at++;
+
+	}
+
+	//最前面のパーツを描画
+	at = m_NoteAt;
+	while ((at < m_Notes.size()) && (m_Notes[at].nTick < (m_nTick + m_uVisibleTick))) {
+		if (!m_Notes[at].bHide) {
+			//Y座標計算
+			y = m_uHeight - (m_ptOrigin.y - (float)(((m_Notes[at].nTick - m_nTick) * ((float)(m_uHeight - m_pSkin->note.Tap_size.y / 2) / (float)m_uVisibleTick))));
+			if ((m_Notes[at].nType == NOTETYPE_FLICK) || (m_Notes[at].nType == NOTETYPE_LONG_END_FLICK)) {
+				//フリックのガイド的なヤツを描画
+				static int oz = 0;
+				oz = (GetNowCount() % 400) / 10; //時間軸の変化に合わせてZ軸を動かす
+				GetGraphSizeF(m_pSkin->note.Flickg, &sx, &sy);
+				DrawBillboard3D(VGet(m_notepos[m_Notes[at].nLane] - (m_pSkin->note.Tap_size.x - sx) / 2,
+					y + sy,
+					69.0f - sy - 20 - oz), 0, 0.5, sx, 0, m_pSkin->note.Flickg, TRUE);
+			}
+		}
+		at++;
+
+	}
+	
 	if (tm_lgn2 - tm_lgn > 100) {
 		tm_lgn = tm_lgn2;
 	}
@@ -636,33 +682,61 @@ void CMusicMan::Hittest(int64_t &nTick){
 		}
 	}
 	else {
-		bKeyHold[0] = m_Cki.KeyHeld(KEY_INPUT_Z);
-		bKeyHold[1] = m_Cki.KeyHeld(KEY_INPUT_X);
-		bKeyHold[2] = m_Cki.KeyHeld(KEY_INPUT_C);
-		bKeyHold[3] = m_Cki.KeyHeld(KEY_INPUT_V);
-		bKeyHold[4] = m_Cki.KeyHeld(KEY_INPUT_B);
-		bKeyHold[5] = m_Cki.KeyHeld(KEY_INPUT_N);
-		bKeyHold[6] = m_Cki.KeyHeld(KEY_INPUT_M);
-		bKeyHold[7] = m_Cki.KeyHeld(KEY_INPUT_COMMA);
-		bKeyHold[8] = m_Cki.KeyHeld(KEY_INPUT_COLON);
-		bKeyUp[0] = m_Cki.KeyUp(KEY_INPUT_Z);
-		bKeyUp[1] = m_Cki.KeyUp(KEY_INPUT_X);
-		bKeyUp[2] = m_Cki.KeyUp(KEY_INPUT_C);
-		bKeyUp[3] = m_Cki.KeyUp(KEY_INPUT_V);
-		bKeyUp[4] = m_Cki.KeyUp(KEY_INPUT_B);
-		bKeyUp[5] = m_Cki.KeyUp(KEY_INPUT_N);
-		bKeyUp[6] = m_Cki.KeyUp(KEY_INPUT_M);
-		bKeyUp[7] = m_Cki.KeyUp(KEY_INPUT_COMMA);
-		bKeyUp[8] = m_Cki.KeyUp(KEY_INPUT_COLON);
-		bKeyDown[0] = m_Cki.KeyDown(KEY_INPUT_Z);
-		bKeyDown[1] = m_Cki.KeyDown(KEY_INPUT_X);
-		bKeyDown[2] = m_Cki.KeyDown(KEY_INPUT_C);
-		bKeyDown[3] = m_Cki.KeyDown(KEY_INPUT_V);
-		bKeyDown[4] = m_Cki.KeyDown(KEY_INPUT_B);
-		bKeyDown[5] = m_Cki.KeyDown(KEY_INPUT_N);
-		bKeyDown[6] = m_Cki.KeyDown(KEY_INPUT_M);
-		bKeyDown[7] = m_Cki.KeyDown(KEY_INPUT_COMMA);
-		bKeyDown[8] = m_Cki.KeyDown(KEY_INPUT_COLON);
+		bKeyHold[0] |= m_Cki.KeyHeld(KEY_INPUT_Z);
+		bKeyHold[1] |= m_Cki.KeyHeld(KEY_INPUT_X);
+		bKeyHold[2] |= m_Cki.KeyHeld(KEY_INPUT_C);
+		bKeyHold[3] |= m_Cki.KeyHeld(KEY_INPUT_V);
+		bKeyHold[4] |= m_Cki.KeyHeld(KEY_INPUT_B);
+		bKeyHold[5] |= m_Cki.KeyHeld(KEY_INPUT_N);
+		bKeyHold[6] |= m_Cki.KeyHeld(KEY_INPUT_M);
+		bKeyHold[7] |= m_Cki.KeyHeld(KEY_INPUT_COMMA);
+		bKeyHold[8] |= m_Cki.KeyHeld(KEY_INPUT_COLON);
+		bKeyUp[0] |= m_Cki.KeyUp(KEY_INPUT_Z);
+		bKeyUp[1] |= m_Cki.KeyUp(KEY_INPUT_X);
+		bKeyUp[2] |= m_Cki.KeyUp(KEY_INPUT_C);
+		bKeyUp[3] |= m_Cki.KeyUp(KEY_INPUT_V);
+		bKeyUp[4] |= m_Cki.KeyUp(KEY_INPUT_B);
+		bKeyUp[5] |= m_Cki.KeyUp(KEY_INPUT_N);
+		bKeyUp[6] |= m_Cki.KeyUp(KEY_INPUT_M);
+		bKeyUp[7] |= m_Cki.KeyUp(KEY_INPUT_COMMA);
+		bKeyUp[8] |= m_Cki.KeyUp(KEY_INPUT_COLON);
+		bKeyDown[0] |= m_Cki.KeyDown(KEY_INPUT_Z);
+		bKeyDown[1] |= m_Cki.KeyDown(KEY_INPUT_X);
+		bKeyDown[2] |= m_Cki.KeyDown(KEY_INPUT_C);
+		bKeyDown[3] |= m_Cki.KeyDown(KEY_INPUT_V);
+		bKeyDown[4] |= m_Cki.KeyDown(KEY_INPUT_B);
+		bKeyDown[5] |= m_Cki.KeyDown(KEY_INPUT_N);
+		bKeyDown[6] |= m_Cki.KeyDown(KEY_INPUT_M);
+		bKeyDown[7] |= m_Cki.KeyDown(KEY_INPUT_COMMA);
+		bKeyDown[8] |= m_Cki.KeyDown(KEY_INPUT_COLON);
+
+		bKeyHold[0] |= m_Cki.KeyHeld(KEY_INPUT_W);
+		bKeyHold[1] |= m_Cki.KeyHeld(KEY_INPUT_E);
+		bKeyHold[2] |= m_Cki.KeyHeld(KEY_INPUT_R);
+		bKeyHold[3] |= m_Cki.KeyHeld(KEY_INPUT_T);
+		bKeyHold[4] |= m_Cki.KeyHeld(KEY_INPUT_Y);
+		bKeyHold[5] |= m_Cki.KeyHeld(KEY_INPUT_U);
+		bKeyHold[6] |= m_Cki.KeyHeld(KEY_INPUT_I);
+		bKeyHold[7] |= m_Cki.KeyHeld(KEY_INPUT_O);
+		bKeyHold[8] |= m_Cki.KeyHeld(KEY_INPUT_P);
+		bKeyUp[0] |= m_Cki.KeyHeld(KEY_INPUT_W);
+		bKeyUp[1] |= m_Cki.KeyHeld(KEY_INPUT_E);
+		bKeyUp[2] |= m_Cki.KeyHeld(KEY_INPUT_R);
+		bKeyUp[3] |= m_Cki.KeyHeld(KEY_INPUT_T);
+		bKeyUp[4] |= m_Cki.KeyHeld(KEY_INPUT_Y);
+		bKeyUp[5] |= m_Cki.KeyHeld(KEY_INPUT_U);
+		bKeyUp[6] |= m_Cki.KeyHeld(KEY_INPUT_I);
+		bKeyUp[7] |= m_Cki.KeyHeld(KEY_INPUT_O);
+		bKeyUp[8] |= m_Cki.KeyHeld(KEY_INPUT_P);
+		bKeyDown[0] |= m_Cki.KeyHeld(KEY_INPUT_W);
+		bKeyDown[1] |= m_Cki.KeyHeld(KEY_INPUT_E);
+		bKeyDown[2] |= m_Cki.KeyHeld(KEY_INPUT_R);
+		bKeyDown[3] |= m_Cki.KeyHeld(KEY_INPUT_T);
+		bKeyDown[4] |= m_Cki.KeyHeld(KEY_INPUT_Y);
+		bKeyDown[5] |= m_Cki.KeyHeld(KEY_INPUT_U);
+		bKeyDown[6] |= m_Cki.KeyHeld(KEY_INPUT_I);
+		bKeyDown[7] |= m_Cki.KeyHeld(KEY_INPUT_O);
+		bKeyDown[8] |= m_Cki.KeyHeld(KEY_INPUT_P);
 	}
 	
 
@@ -693,7 +767,18 @@ void CMusicMan::Hittest(int64_t &nTick){
 				}
 			}
 			else {
-				if ((m_Notes[at].nTick <= (nTick + APP_TICK_ERR_PERFECT)) && (m_Notes[at].nTick >= nTick - APP_TICK_ERR_PERFECT)) {
+				if ((m_Notes[at].nType == NOTETYPE_LONG_POINT) && (m_Notes[at].nTick <= nTick ) && (m_Notes[at].nTick >= nTick - APP_TICK_ERR_PERFECT)) {
+					m_nCount_Perfect++;
+					m_nCount_Combo++;
+					if (m_nCount_Combo > m_nCount_MaxCombo) {
+						m_nCount_MaxCombo = m_nCount_Combo;
+					}
+
+					m_caJudgement.Set(0, 1, CATYPE_ADD);
+					m_nJudgement = 1;
+					bOK = true;
+				}
+				else if ((m_Notes[at].nType != NOTETYPE_LONG_POINT) && (m_Notes[at].nTick <= (nTick + APP_TICK_ERR_PERFECT)) && (m_Notes[at].nTick >= nTick - APP_TICK_ERR_PERFECT)) {
 					m_nCount_Perfect++;
 					m_nCount_Combo++;
 					if (m_nCount_Combo > m_nCount_MaxCombo) {
