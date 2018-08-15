@@ -1,7 +1,7 @@
 # Thumbthm
-バンドをテーマとした音ゲーのシミュレーター。
+バンドリのシミュレーター。
 
-[最新版(v0.3.0)](https://github.com/inonote/Thumbthm/releases/tag/v0.3.0
+[最新版(v0.3.1)](https://github.com/inonote/Thumbthm/releases/tag/v0.3.1
 )
 
 # 要件
