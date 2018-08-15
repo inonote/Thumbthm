@@ -60,7 +60,20 @@ CMainLoop::~CMainLoop() {
 	DeleteSoundMem(m_SE.Long);
 	DeleteSoundMem(m_SE.Flick);
 	DeleteSoundMem(m_SE.Skill);
-
+	DeleteGraph(m_Skin.BG);
+	DeleteGraph(m_Skin.DxLogo);
+	DeleteGraph(m_Skin.Lane);
+	DeleteGraph(m_Skin.note.Bar);
+	DeleteGraph(m_Skin.note.Flick);
+	DeleteGraph(m_Skin.note.Flickg);
+	DeleteGraph(m_Skin.note.Long);
+	DeleteGraph(m_Skin.note.Longg);
+	DeleteGraph(m_Skin.note.Long_Point);
+	DeleteGraph(m_Skin.note.Skill);
+	DeleteGraph(m_Skin.note.Tap);
+	DeleteGraph(m_Skin.note.TapEffect);
+	DeleteGraph(m_Skin.note.touch);
+	DeleteGraph(m_Skin.note.TouchEffect2);
 }
 
 //ÉvÉçÉOÉâÉÄÇé¿çs

@@ -12,3 +12,4 @@
 #include "stdafx.h"
 
 bool CompileNotes(vector<NoteData>& NotesData, const string& sData, size_t nLen);
+bool CompileNotesFromBMS(vector<NoteData>& NotesData, const string& sData, size_t nLen);

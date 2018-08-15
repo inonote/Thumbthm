@@ -26,6 +26,7 @@ CMusicMan::CMusicMan(const char* FolderPath, int Level, const SkinData* pSkin, c
 	char sFilePath[MAX_PATH + 1];
 	char sBuf[0x301];
 	char sBuf2[0x301];
+	bool bBMS = false;
 
 	m_pSkin = pSkin;
 	m_pSE = pSE;
@@ -49,8 +50,30 @@ CMusicMan::CMusicMan(const char* FolderPath, int Level, const SkinData* pSkin, c
 
 	int nSize = FileRead_size(sFilePath);
 	if (nSize == -1) { //ファイルが存在しない
-		m_nErrorID = 1;
-		return;
+		//BMSファイルを読み込む
+		switch (Level)
+		{
+		case LV_EASY:
+			sprintf_s(sFilePath, MAX_PATH, "%sEasy.bms", FolderPath);
+			break;
+		case LV_NORMAL:
+			sprintf_s(sFilePath, MAX_PATH, "%sNormal.bms", FolderPath);
+			break;
+		case LV_HARD:
+			sprintf_s(sFilePath, MAX_PATH, "%sHard.bms", FolderPath);
+			break;
+		default:
+			sprintf_s(sFilePath, MAX_PATH, "%sExpert.bms", FolderPath);
+			break;
+		}
+
+		nSize = FileRead_size(sFilePath);
+		if (nSize == -1) { //ファイルが存在しない
+			m_nErrorID = 1;
+			return;
+		}
+
+		bBMS = true;
 	}
 
 	int nhFile = FileRead_open(sFilePath, 0);
@@ -61,14 +84,17 @@ CMusicMan::CMusicMan(const char* FolderPath, int Level, const SkinData* pSkin, c
 		return;
 	}
 	FileRead_read(str, nSize, nhFile);
-	m_sData = str; //代入
+	m_sData = str + string("\n"); //代入
 	m_uDataSize = m_sData.length();
 
 	delete[] str;
 	FileRead_close(nhFile);
 
 	//譜面を解析
-	CompileNotes(m_Notes, m_sData, m_uDataSize);
+	if (bBMS)
+		CompileNotesFromBMS(m_Notes, m_sData, m_uDataSize);
+	else
+		CompileNotes(m_Notes, m_sData, m_uDataSize);
 
 	//楽曲情報を取得
 	sprintf_s(sFilePath, MAX_PATH, "%sInfo.ini", FolderPath);

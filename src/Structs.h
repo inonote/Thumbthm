@@ -9,6 +9,7 @@ typedef struct {
 	uint nTick;
 	uint nType;
 	uint nLongEndIndex;
+	uint nID;
 	bool bTapped;
 	bool bHide;
 	bool bMissed;
@@ -102,3 +103,9 @@ typedef struct {
 	} pt;
 	int id;
 } TouchInfo;
+
+typedef struct {
+	WORD nMeasNo;
+	WORD nChannelNo;
+	std::string *pData;
+} BMSData;
