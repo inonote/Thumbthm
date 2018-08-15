@@ -1,8 +1,7 @@
 # Thumbthm
 バンドリのシミュレーター。
 
-[最新版(v0.3.1)](https://github.com/inonote/Thumbthm/releases/tag/v0.3.1
-)
+[最新版(v0.3.5)](https://github.com/inonote/Thumbthm/releases/tag/v0.3.5)
 
 # 要件
 * ディスプレイ（1440x810以上）
