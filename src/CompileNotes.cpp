@@ -2,9 +2,9 @@
 
 @Filename  : CompileNotes.cpp
 @Author    : inonote
-@Modified  : 2018/06/29
-@First ed. : 2018/08/15
-@Comment   : •ˆ–Ê‚ğƒRƒ“ƒpƒCƒ‹‚·‚éƒ\[ƒXƒR[ƒhB
+@Modified  : 2018/08/16
+@First ed. : 2018/06/29
+@Comment   : è­œé¢ã‚’ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã™ã‚‹ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã€‚
 
 *****/
 
@@ -32,8 +32,8 @@ bool CompileNotes(vector<NoteData>& NotesData, const string& sData, size_t nLen)
 
 	ZeroMemory(&data, sizeof(data));
 	
-	//ˆês‚¸‚Â“Ç‚İæ‚Á‚Ä‚¢‚­
-	//NOTE : 1920 Tick‚Å1¬ß
+	//ä¸€è¡Œãšã¤èª­ã¿å–ã£ã¦ã„ã
+	//NOTE : 1920 Tickã§1å°ç¯€
 
 	for (size_t i = 0; i < nLen; i++) {
 		if (sData[i] == 0x0D) {
@@ -43,7 +43,7 @@ bool CompileNotes(vector<NoteData>& NotesData, const string& sData, size_t nLen)
 		}
 		else {
 			if (sLine[0] == '#') {
-				//Tab‹æØ‚è‚Ìƒf[ƒ^[‚ğ•ª‰ğ
+				//TabåŒºåˆ‡ã‚Šã®ãƒ‡ãƒ¼ã‚¿ãƒ¼ã‚’åˆ†è§£
 				sParams.clear();
 				sLine += '\t';
 				nIndex = 0;
@@ -56,7 +56,7 @@ bool CompileNotes(vector<NoteData>& NotesData, const string& sData, size_t nLen)
 				ZeroMemory(&data, sizeof(data));
 				data.nTick = atoi(sParams[0].c_str()) * APP_TICK_MEASURE + atoi(sParams[1].c_str()) * APP_TICK_ADJUST;
 				for (size_t j = 2; j < sParams.size(); j++) {
-					//@‚Å•ª‰ğ
+					//@ã§åˆ†è§£
 					nIndex = 0;
 					nOldIndex = -1;
 					nCount = 0;
@@ -69,8 +69,8 @@ bool CompileNotes(vector<NoteData>& NotesData, const string& sData, size_t nLen)
 						}else if (nCount == 2) {
 							size_t n = atoi(sParams[j].substr(nOldIndex + 1, nIndex - nOldIndex - 1).c_str());
 
-							//ƒƒ“ƒOƒm[ƒc‚ÌŠJn‚ÆI—¹‚ğƒŠƒ“ƒN‚³‚¹‚é
-							if ((data.nType >= 4) && (data.nType <= 6)) { //ŠJn
+							//ãƒ­ãƒ³ã‚°ãƒãƒ¼ãƒ„ã®é–‹å§‹ã¨çµ‚äº†ã‚’ãƒªãƒ³ã‚¯ã•ã›ã‚‹
+							if ((data.nType >= 4) && (data.nType <= 6)) { //é–‹å§‹
 								if (n < MAX_NOTEID) {
 									if (nLongNoteBeginIndex[n] > 0) {
 
@@ -80,7 +80,7 @@ bool CompileNotes(vector<NoteData>& NotesData, const string& sData, size_t nLen)
 									nLongNoteBeginIndex[n] = NotesData.size() + 1;
 								}
 							}
-							else if ((data.nType >= 7) && (data.nType <= 9)) { //I—¹
+							else if ((data.nType >= 7) && (data.nType <= 9)) { //çµ‚äº†
 								if (n < MAX_NOTEID) {
 									if (nLongNoteBeginIndex[n] > 0) {
 										NotesData[nLongNoteBeginIndex[n] - 1].nLongEndIndex = NotesData.size();
@@ -95,7 +95,7 @@ bool CompileNotes(vector<NoteData>& NotesData, const string& sData, size_t nLen)
 						nIndex++;
 						nCount++;
 					}
-					//NotesData‚ÉƒvƒbƒVƒ…
+					//NotesDataã«ãƒ—ãƒƒã‚·ãƒ¥
 					NotesData.push_back(data);
 				}
 			}
@@ -106,7 +106,7 @@ bool CompileNotes(vector<NoteData>& NotesData, const string& sData, size_t nLen)
 	return true;
 }
 
-//BMSƒtƒH[ƒ}ƒbƒg‚©‚ç“Ç‚İ‚İ
+//BMSãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã‹ã‚‰èª­ã¿è¾¼ã¿
 bool CompileNotesFromBMS(vector<NoteData>& NotesData, const string& sData, size_t nLen) {
 	string sLine = "";
 	vector<string> sParams;
@@ -123,8 +123,8 @@ bool CompileNotesFromBMS(vector<NoteData>& NotesData, const string& sData, size_
 
 	ZeroMemory(&data, sizeof(data));
 	
-	//ˆês‚¸‚Â“Ç‚İæ‚Á‚Ä‚¢‚­
-	//NOTE : 1920 Tick‚Å1¬ß
+	//ä¸€è¡Œãšã¤èª­ã¿å–ã£ã¦ã„ã
+	//NOTE : 1920 Tickã§1å°ç¯€
 
 	for (size_t i = 0; i < nLen; i++) {
 		if (sData[i] == 0x0D) {
@@ -133,12 +133,12 @@ bool CompileNotesFromBMS(vector<NoteData>& NotesData, const string& sData, size_
 			sLine += sData[i];
 		}
 		else {
-			if (GetBMSData(sLine, bmsData)) { //BMS‚Ìƒf[ƒ^[‚ğæ“¾
-				//ƒ`ƒƒƒ“ƒlƒ‹”Ô†‚Í11‚©‚ç19‚Ü‚Å
+			if (GetBMSData(sLine, bmsData)) { //BMSã®ãƒ‡ãƒ¼ã‚¿ãƒ¼ã‚’å–å¾—
+				//ãƒãƒ£ãƒ³ãƒãƒ«ç•ªå·ã¯11ã‹ã‚‰19ã¾ã§
 				if ((bmsData.nChannelNo >= 11) && (bmsData.nChannelNo <= 19)) {
-					size_t uStep = APP_TICK_MEASURE / (bmsData_Notes.length() / 2); //’l‚Æ’l‚Ì•ˆ–Êã‚ÌŠÔŠu
+					size_t uStep = APP_TICK_MEASURE / (bmsData_Notes.length() / 2); //å€¤ã¨å€¤ã®è­œé¢ä¸Šã®é–“éš”
 					for (size_t j = 0; j < bmsData_Notes.length() / 2; j++) {
-						//ƒm[ƒc‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
+						//ãƒãƒ¼ãƒ„ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
 						str[0] = bmsData_Notes[j * 2];
 						str[1] = bmsData_Notes[j * 2 + 1];
 						str[2] = 0;
@@ -152,7 +152,7 @@ bool CompileNotesFromBMS(vector<NoteData>& NotesData, const string& sData, size_
 							if (data.nLane >= 7)
 								data.nLane -= 2;
 							data.nID = (nIndex - 1) / 10;
-							//NotesData‚ÉƒvƒbƒVƒ…
+							//NotesDataã«ãƒ—ãƒƒã‚·ãƒ¥
 							NotesData.push_back(data);
 						}
 					}
@@ -163,14 +163,14 @@ bool CompileNotesFromBMS(vector<NoteData>& NotesData, const string& sData, size_
 
 	}
 
-	//ƒ\[ƒg
+	//ã‚½ãƒ¼ãƒˆ
 	sort(NotesData.begin(), NotesData.end(),
 		[](const NoteData& l, const NoteData& r) {
 		return l.nTick == r.nTick ? l.nLane < r.nLane : l.nTick < r.nTick;});
 
-	//ƒƒ“ƒOƒm[ƒc‚ÌŠJn‚ÆI—¹‚ğƒŠƒ“ƒN‚³‚¹‚é
+	//ãƒ­ãƒ³ã‚°ãƒãƒ¼ãƒ„ã®é–‹å§‹ã¨çµ‚äº†ã‚’ãƒªãƒ³ã‚¯ã•ã›ã‚‹
 	for (auto itr = NotesData.begin(); itr != NotesData.end(); itr++) {
-		if ((itr->nType >= 4) && (itr->nType <= 6)) { //ŠJn
+		if ((itr->nType >= 4) && (itr->nType <= 6)) { //é–‹å§‹
 			if (itr->nID < MAX_NOTEID) {
 				if (nLongNoteBeginIndex[itr->nID] > 0) {
 
@@ -180,7 +180,7 @@ bool CompileNotesFromBMS(vector<NoteData>& NotesData, const string& sData, size_
 				nLongNoteBeginIndex[itr->nID] = (itr - NotesData.begin()) + 1;
 			}
 		}
-		else if ((itr->nType >= 7) && (itr->nType <= 9)) { //I—¹
+		else if ((itr->nType >= 7) && (itr->nType <= 9)) { //çµ‚äº†
 			if (itr->nID < MAX_NOTEID) {
 				if (nLongNoteBeginIndex[itr->nID] > 0) {
 					NotesData[nLongNoteBeginIndex[itr->nID] - 1].nLongEndIndex = (itr - NotesData.begin());
@@ -193,7 +193,7 @@ bool CompileNotesFromBMS(vector<NoteData>& NotesData, const string& sData, size_
 	return true;
 }
 
-//36i”‚ğint‚É
+//36é€²æ•°ã‚’intã«
 int b36toi(const char *_String) {
 	int num = 0;
 	while (*_String) {
@@ -208,7 +208,7 @@ int b36toi(const char *_String) {
 	return num;
 }
 
-//”’l‚©”»’è
+//æ•°å€¤ã‹åˆ¤å®š
 bool isNum(const char *_String) {
 	bool b = true;
 	while (*_String) {
@@ -221,11 +221,11 @@ bool isNum(const char *_String) {
 	return b;
 }
 
-//BMSƒtƒH[ƒ}ƒbƒg‚Ìƒf[ƒ^[æ“¾
+//BMSãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®ãƒ‡ãƒ¼ã‚¿ãƒ¼å–å¾—
 bool GetBMSData(const string &sLine, BMSData &Data) {
 	if (sLine[0] != '#')
 		return false;
-	if (!isNum(sLine.substr(1, 3).c_str())) //®”‚©‚Ç‚¤‚©‚Ì”»’è
+	if (!isNum(sLine.substr(1, 3).c_str())) //æ•´æ•°ã‹ã©ã†ã‹ã®åˆ¤å®š
 		return false;
 	Data.nMeasNo = atoi(sLine.substr(1, 3).c_str());
 	Data.nChannelNo = atoi(sLine.substr(4, 2).c_str());
