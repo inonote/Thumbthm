@@ -1,6 +1,7 @@
 # Thumbthm
 バンドリのシミュレーター。
 
+**注:まだ開発中ですので、表示に違和感があったりします**  
 [最新版(v0.3.5)](https://github.com/inonote/Thumbthm/releases/tag/v0.3.5)
 
 # 要件
